@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
+import {Typography } from 'antd';
 
 class Header extends React.Component {
    componentDidMount() {
@@ -7,10 +8,10 @@ class Header extends React.Component {
 	}
    render() {
       return (
-        <h1 className="site-heading">
-            {this.props.title} {this.props.auth.name}
+        <Typography.Title>
+            {this.props.title} {this.props.auth?.name}
             {this.props.children}
-        </h1>
+        </Typography.Title>
       );
    }
 }

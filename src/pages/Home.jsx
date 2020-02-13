@@ -51,15 +51,31 @@ class Home extends React.Component {
 				title: 'Title',
 				dataIndex: 'title',
 				key: 'title',
+				className: 'text-center',
 				render: title => (
 					<Tag color={this.state.colors[Math.floor(Math.random() * 11)]} key={title}>
 						{title}
 					</Tag>
 				)
 			},
+			{
+				title: 'Action',
+				key: 'action',
+				className: 'text-center',
+				render: (text, record) => (
+					<Button.Group>
+						<Button type="primary" ghost={true} onClick={this.editRecord} size="small" icon="edit" />
+						<Button type="danger"  ghost={true} onClick={this.deleteRecord} size="small" icon="delete" />
+					</Button.Group>
+				  ),
+			}
 		]
 	}
-	componentDidMount() {
+	editRecord = (record) => {
+		console.log(record)
+	}
+	deleteRecord = (record) => {
+		console.log(record)
 	}
 	render() {
 		return (
@@ -107,6 +123,7 @@ class Home extends React.Component {
 									onClose={() => { this.setState({visible: false}) }}
 									visible={this.state.visible}
 									refresh={refetch}
+									editData={this.editdata}
 								/>
 								<UserTable users={data.users} columns={this.state.columns} />
 							</>

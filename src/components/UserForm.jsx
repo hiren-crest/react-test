@@ -82,5 +82,9 @@ class UserForm extends React.Component {
         );
     }
 }
-UserForm = Form.create()(UserForm);
+UserForm = Form.create({
+    mapPropsToFields(props) {
+        return {}
+    }
+})(UserForm);
 export default UserForm

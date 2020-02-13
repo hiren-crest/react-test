@@ -4,7 +4,7 @@ import {Redirect} from "react-router-dom"
 import { connect } from 'react-redux';
 import { getAuth } from '../redux/selectors'
 import { login } from '../redux/actions'
-import { Button, Typography, Row, Col, Input, Skeleton, message } from 'antd'
+import { Button, Row, Col, Input, Skeleton, message } from 'antd'
 import axios from 'axios'
 import gql from 'graphql-tag'
 import { print } from 'graphql'
@@ -14,7 +14,7 @@ class Form extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            head: "Heading",
+            head: "Login",
             test: "testing",
             email: '',
             password: ''
@@ -48,9 +48,7 @@ class Form extends React.Component {
                     (
                         <>
                             <Suspense fallback={<Skeleton />}>
-                                <Header title={this.state.head} align="center">
-                                    <Typography.Title>test</Typography.Title>
-                                </Header>
+                                <Header title={this.state.head} align="center" />
                             </Suspense>
                             <Suspense fallback={<Skeleton />}>
                                 <Row justify="center" type="flex">
