@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
-import { getAuth } from '../redux/selectors'
 import { Menu } from 'antd'
 
 class Navigation extends React.Component {
@@ -24,4 +23,4 @@ class Navigation extends React.Component {
         )
    }
 }
-export default connect(state => ({auth: getAuth(state)}))(Navigation)
+export default connect(state => ({auth: state.auth}))(Navigation)

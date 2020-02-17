@@ -2,12 +2,8 @@ import React, { Suspense } from 'react';
 import Header from '../partials/Header.jsx'
 import {Redirect} from "react-router-dom"
 import { connect } from 'react-redux';
-import { getAuth } from '../redux/selectors'
-import { login } from '../redux/actions'
-import { Button, Row, Col, Input, Skeleton, message } from 'antd'
-import axios from 'axios'
+import { Button, Row, Col, Input, Skeleton } from 'antd'
 import gql from 'graphql-tag'
-import { print } from 'graphql'
 
 class Form extends React.Component {
     
@@ -24,19 +20,28 @@ class Form extends React.Component {
     passwordField = React.createRef()
 
     testing_login() {
-        const query = gql`
-            mutation {
-                me (email: "${this.state.email}", password: "${this.state.password}") { 
-                    email, name
+        const mutation = gql`
+            mutation Me(
+                    $email: String!
+                    $password: String!
+                ) {
+                me (
+                        email: $email
+                        password: $password
+                    ) { 
+                    email
+                    name
                 }
             }
         `
-        axios.post('http://localhost:4000', {query: print(query)}).then(({data}) => {
-            if(data.data && !data.data.me) {
-                message.error(data.errors[0].message)
-            } else {
-                message.success(`Welcome ${data.data.me.name}!`)
-                this.props.dispatch(login(data.data.me))
+        this.props.dispatch({
+            type: 'LOGIN_ASYNC',
+            payload: {
+                mutation,
+                variables: {
+                    email: this.state.email,
+                    password: this.state.password
+                }
             }
         })
     }
@@ -88,4 +93,4 @@ class Form extends React.Component {
         )
     }
 }
-export default connect(state => ({auth: getAuth(state)}))(Form)
+export default connect(state => (state))(Form)

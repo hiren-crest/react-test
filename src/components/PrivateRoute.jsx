@@ -16,4 +16,4 @@ function PrivateRoute ({component: Component, ...rest}) {
     );
 }
 
-export default connect(state => ({...state}))(PrivateRoute)
+export default connect(state => (state))(PrivateRoute)

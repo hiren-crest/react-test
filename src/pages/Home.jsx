@@ -3,26 +3,16 @@ import Header from '../partials/Header.jsx'
 import {Redirect} from "react-router-dom"
 import { logout, LOGOUT } from '../redux/actions'
 import { connect } from 'react-redux';
-import { getAuth } from '../redux/selectors'
-import { Query } from '@apollo/react-components'
-import gql from 'graphql-tag'
-import { Card, Button, Tag } from 'antd';
+import { Card, Button, Tag, Popconfirm } from 'antd';
 import UserForm from '../components/UserForm.jsx';
 import UserTable from '../components/UserTable.jsx';
+import UserQueries from '../queries/users'
 
 class Home extends React.Component {
 	state = {
 		head: "Heading",
 		test: "testing",
 		visible: false,
-		query: gql`{
-			users {
-				name
-				email
-				id
-				title
-			}
-		}`,
 		colors: [
 			'geekblue',
 			'green',
@@ -63,19 +53,52 @@ class Home extends React.Component {
 				key: 'action',
 				className: 'text-center',
 				render: (text, record) => (
-					<Button.Group>
-						<Button type="primary" ghost={true} onClick={this.editRecord} size="small" icon="edit" />
-						<Button type="danger"  ghost={true} onClick={this.deleteRecord} size="small" icon="delete" />
-					</Button.Group>
+					this.props.auth?.email === record.email
+						? ''
+						: <Button.Group>
+							<Button type="primary" ghost={true} onClick={() => this.editRecord(record)} size="small" icon="edit" />
+							<Popconfirm
+								placement="topRight"
+								onConfirm={() => this.deleteRecord(record)}
+								title="Are you sure delete this user?"
+								okText="Yes"
+    							cancelText="No"
+							>
+								<Button type="danger"  ghost={true} size="small" icon="delete" />
+							</Popconfirm>
+						</Button.Group>
 				  ),
 			}
-		]
+		],
+		editdata: {}
 	}
 	editRecord = (record) => {
-		console.log(record)
+		this.setState({
+			visible: true,
+			editdata: record
+		})
+	}
+	componentDidMount() {
+		this.fetch()
+	}
+	fetch() {
+		this.props.dispatch({
+			type: 'GET_USERS_ASYNC',
+			payload: {
+				query: UserQueries.fetch
+			}
+		})
 	}
 	deleteRecord = (record) => {
-		console.log(record)
+		this.props.dispatch({
+			type: 'DELETE_USER_ASYNC',
+			payload: {
+				mutation: UserQueries.delete,
+				variables: {
+					id: record.id
+				}
+			}
+		})
 	}
 	render() {
 		return (
@@ -113,25 +136,14 @@ class Home extends React.Component {
 						)}
 					</Header>
 				</Suspense>
-
-				<Query query={this.state.query}>
-					{({ loading, data, refetch }) => {
-						if(loading) return <p>Loading...</p>;
-						return (
-							<>
-								<UserForm
-									onClose={() => { this.setState({visible: false}) }}
-									visible={this.state.visible}
-									refresh={refetch}
-									editData={this.editdata}
-								/>
-								<UserTable users={data.users} columns={this.state.columns} />
-							</>
-						);
-					}}
-				</Query>
+				<UserForm
+					onClose={() => { this.setState({visible: false, editdata: {} }) }}
+					visible={this.state.visible}
+					editData={this.state.editdata}
+				/>
+				<UserTable users={this.props.users} columns={this.state.columns} />
 			</Card>
 		)
 	}
 }
-export default connect(state => ({auth: getAuth(state)}))(Home)
+export default connect(state => (state))(Home)

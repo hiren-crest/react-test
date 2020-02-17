@@ -2,8 +2,9 @@ import { LOGIN, LOGOUT } from '../actions'
 export default function auth(state = {}, action) {
     switch (action.type) {
         case LOGIN:
-            localStorage.setItem('auth_user', JSON.stringify({ email: action.email, name: action.name}));
-            return { email: action.email, name: action.name};
+            console.log(action.data)
+            localStorage.setItem('auth_user', JSON.stringify({ ...action.data.me }));
+            return action.data.me;
         case LOGOUT:
             localStorage.removeItem('auth_user')
             return null
