@@ -36,8 +36,23 @@ export const createUser = gql`
     }
 `
 
+export const loginUser = gql`
+    mutation Me(
+            $email: String!
+            $password: String!
+        ) {
+        me (
+                email: $email
+                password: $password
+            ) { 
+            email
+            name
+        }
+    }`
+
 export default {
     create: createUser,
     delete: deleteUser,
-    fetch: fetchUsers
+    fetch: fetchUsers,
+    login: loginUser
 }

@@ -8,7 +8,6 @@ export class UserTable extends Component {
                 dataSource={this.props.users}
                 columns={this.props.columns}
                 rowKey="id"
-                onChange={(e) => {console.log(e)}} 
                 bordered
             />
         )

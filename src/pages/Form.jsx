@@ -3,7 +3,7 @@ import Header from '../partials/Header.jsx'
 import {Redirect} from "react-router-dom"
 import { connect } from 'react-redux';
 import { Button, Row, Col, Input, Skeleton } from 'antd'
-import gql from 'graphql-tag'
+import { loginUser } from '../queries/users'
 
 class Form extends React.Component {
     
@@ -20,24 +20,10 @@ class Form extends React.Component {
     passwordField = React.createRef()
 
     testing_login() {
-        const mutation = gql`
-            mutation Me(
-                    $email: String!
-                    $password: String!
-                ) {
-                me (
-                        email: $email
-                        password: $password
-                    ) { 
-                    email
-                    name
-                }
-            }
-        `
         this.props.dispatch({
             type: 'LOGIN_ASYNC',
             payload: {
-                mutation,
+                mutation: loginUser,
                 variables: {
                     email: this.state.email,
                     password: this.state.password

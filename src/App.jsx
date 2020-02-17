@@ -14,9 +14,6 @@ const Home = React.lazy(() => import("./pages/Home.jsx"))
 const Form = React.lazy(() => import("./pages/Form.jsx"))
 
 class App extends React.Component {
-	state = {
-		auth_status: false
-	}
 	render() {
 		return (
 			<Layout>
@@ -27,15 +24,25 @@ class App extends React.Component {
 								<Layout.Header>
 									<Navigation />
 								</Layout.Header>
-								<Layout.Content>
-									<Switch>
-										<Route path="/login" component={Form} />
-										<PrivateRoute path="/" component={Home} exact />
-										<Route path="*">
-											<Result status="404" title="Lost!" />
-										</Route>
-									</Switch>
-								</Layout.Content>
+								<Layout>
+									<Layout.Content
+										style={{
+											background: '#fff',
+											padding: 24,
+											margin: 0,
+											minHeight: window.innerHeight - 130,
+										}}
+									>
+										<Switch>
+											<Route path="/login" component={Form} />
+											<PrivateRoute path="/" component={Home} exact />
+											<Route path="*">
+												<Result status="404" title="Lost!" />
+											</Route>
+										</Switch>
+									</Layout.Content>
+								</Layout>
+								<Layout.Footer style={{ textAlign: 'center' }}>wdfvb</Layout.Footer>
 							</Suspense>
 						</Router>
 					</ApolloProvider>

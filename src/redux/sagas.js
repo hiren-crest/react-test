@@ -24,12 +24,12 @@ function* loginUser(action) {
 }
 
 function* getUsers(action) {
-    console.log(action)
     try {
         const {data, error} = yield call(fetchUsers, action.payload)
-        console.log({error, data})
         if(data) {
             yield put ({type: 'GET_USERS', data })
+        } else {
+            message.error(error.message)
         }
     } catch (error) {
         message.error(error.message)
@@ -39,12 +39,13 @@ function* getUsers(action) {
 function* createUsers(action) {
     try {
         const {data, error} = yield call(mutateUsers, action.payload)
-        console.log(error)
         if(data) {
             yield put ({type: 'GET_USERS_ASYNC', payload: { query: UserQueries.fetch } })
             if(action.onSuccess) {
                 action.onSuccess()
             }
+        } else {
+            message.error(error.message)
         }
     } catch (error) {
         message.error(error.message)

@@ -3,7 +3,7 @@ import Header from '../partials/Header.jsx'
 import {Redirect} from "react-router-dom"
 import { logout, LOGOUT } from '../redux/actions'
 import { connect } from 'react-redux';
-import { Card, Button, Tag, Popconfirm } from 'antd';
+import { Button, Tag, Popconfirm } from 'antd';
 import UserForm from '../components/UserForm.jsx';
 import UserTable from '../components/UserTable.jsx';
 import UserQueries from '../queries/users'
@@ -102,7 +102,7 @@ class Home extends React.Component {
 	}
 	render() {
 		return (
-			<Card>
+			<>
 				<Suspense fallback={<div>Loading... </div>}>
 					<Header title={this.state.head}>
 						{!this.props.auth ? (<Redirect to="/login" />) : (
@@ -142,7 +142,7 @@ class Home extends React.Component {
 					editData={this.state.editdata}
 				/>
 				<UserTable users={this.props.users} columns={this.state.columns} />
-			</Card>
+			</>
 		)
 	}
 }
