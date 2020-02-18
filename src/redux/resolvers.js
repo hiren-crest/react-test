@@ -12,3 +12,12 @@ export function mutateUsers(payload) {
     .then(({data}) => ({data}))
     .catch(error => ({error}));
 }
+
+export function subscribeUsers(payload, callback) {
+    return client.subscribe(payload)
+    .subscribe({
+        next ({data}) {
+            callback(data)
+        }
+    });
+}

@@ -1,12 +1,13 @@
-import {fetchUsers, mutateUsers} from './resolvers'
+import {fetchUsers, mutateUsers, subscribeUsers} from './resolvers'
 import { call, put, takeLatest, takeEvery } from 'redux-saga/effects'
-import UserQueries from '../queries/users'
+import { sagaMiddleware } from './store'
 import { message } from 'antd'
 export function* watchUsers() {
     yield takeLatest("LOGIN_ASYNC", loginUser);
     yield takeLatest("GET_USERS_ASYNC", getUsers);
     yield takeEvery("CREATE_USER_ASYNC", createUsers);
     yield takeEvery("DELETE_USER_ASYNC", deleteUser);
+    yield takeEvery("SUBSCRIBE_USER_CHANGES", subscribeUser);
 }
 
 function* loginUser(action) {
@@ -40,7 +41,7 @@ function* createUsers(action) {
     try {
         const {data, error} = yield call(mutateUsers, action.payload)
         if(data) {
-            yield put ({type: 'GET_USERS_ASYNC', payload: { query: UserQueries.fetch } })
+            yield put ({type: 'ADD_USER', data: data.createUser})
             if(action.onSuccess) {
                 action.onSuccess()
             }
@@ -57,7 +58,9 @@ function* deleteUser(action) {
         const {data} = yield call(mutateUsers, action.payload)
         if(data) {
             message.success(data.deleteUser)
-            yield put ({type: 'GET_USERS_ASYNC', payload: { query: UserQueries.fetch } })
+            if(action.payload?.variables?.id) {
+                yield put({type: 'DELETE_USER', id: action.payload?.variables?.id})
+            }
             if(action.onSuccess) {
                 action.onSuccess()
             }
@@ -65,4 +68,23 @@ function* deleteUser(action) {
     } catch (error) {
         message.error(error.message)
     }
+}
+
+function* subscribeUser(action) {
+    try {
+        yield call(subscribeUsers, action.payload, yieldSubscription)
+    } catch (error) {
+        message.error(error.message)
+    }
+}
+
+function yieldSubscription(data) {
+    sagaMiddleware.run(function* () {
+        if(data.userAdded) {
+            yield put ({type: 'ADD_USER', data: data.userAdded})
+        }
+        else if(data.userDeleted) {
+            yield put({type: 'DELETE_USER', id: data.userDeleted })
+        }
+    })
 }

@@ -9,7 +9,6 @@ export const fetchUsers = gql`
         }
     }
 `
-
 export const deleteUser = gql`
     mutation deleteUser($id: ID!) {
         deleteUser(id: $id)
@@ -31,7 +30,10 @@ export const createUser = gql`
             id: $id
             name: $name
         ) { 
-            email, name
+            id
+            email
+            name
+            title
         }
     }
 `
@@ -49,10 +51,26 @@ export const loginUser = gql`
             name
         }
     }`
-
+export const subscribeUser = gql`
+    subscription {
+        userAdded {
+            id
+            name
+            title
+            email
+        }
+    }
+`
+export const subscribeDeleteUser = gql`
+    subscription {
+        userDeleted
+    }
+`
 export default {
     create: createUser,
     delete: deleteUser,
     fetch: fetchUsers,
-    login: loginUser
+    login: loginUser,
+    subscribe: subscribeUser,
+    subscribe_delete: subscribeDeleteUser
 }

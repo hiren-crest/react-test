@@ -88,6 +88,20 @@ class Home extends React.Component {
 				query: UserQueries.fetch
 			}
 		})
+		this.props.dispatch({
+			type: 'SUBSCRIBE_USER_CHANGES',
+			payload: {
+				query: UserQueries.subscribe,
+				variables: {}
+			}
+		})
+		this.props.dispatch({
+			type: 'SUBSCRIBE_USER_CHANGES',
+			payload: {
+				query: UserQueries.subscribe_delete,
+				variables: {}
+			}
+		})
 	}
 	deleteRecord = (record) => {
 		this.props.dispatch({
